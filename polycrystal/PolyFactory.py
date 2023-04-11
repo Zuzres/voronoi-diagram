@@ -12,7 +12,7 @@ class PolyFactory:
         self.cores:list = list()
         self.grains:list = list()
 
-    def seedCores(self, numOfCores:int, normalizationFactor = 1) -> Iterable[Core]:
+    def seedCores(self, numOfCores:int, normalizationFactor:float = 1.0) -> Iterable[Core]:
         """
             Generates a requested number of Cores 
             within the set size of polycrystal coordinates
