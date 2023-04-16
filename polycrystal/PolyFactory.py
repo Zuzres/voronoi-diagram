@@ -1,50 +1,35 @@
-from collections.abc import Iterable
 from random import randint
 from math import sqrt
-from . import Core, Grain, Point
-from matplotlib import cm, pyplot as plt
+from . import Grain, Point
+from matplotlib import pyplot as plt
 import numpy as np
 
 class PolyFactory:
     def __init__(self, sizeX, sizeY):
         self.sizeX:int = sizeX
         self.sizeY:int = sizeY
-        self.cores:list = list()
         self.grains:list = list()
 
-    def seedCores(self, numOfCores:int, normalizationFactor:float = 1.0) -> Iterable[Core]:
+    def seedGrains(self, numOfCores:int):
         """
-            Generates a requested number of Cores 
+            Generates a requested number of Grains 
             within the set size of polycrystal coordinates
-            max distance between cores can be normalized 
-            not to exceed the 1/Nth of size of the crystal.
         """
-        max_dist_x = self.sizeX / normalizationFactor
-        max_dist_y = self.sizeX / normalizationFactor
-        while len(self.cores) < numOfCores:
+        self.grains.clear()
+
+        # while len(self.grains) < numOfCores:
+        for n in range(0, numOfCores):
             x = randint(0, self.sizeX)
             y = randint(0, self.sizeY)
-            if normalizationFactor > 1 and \
-                all(abs(x - core.x) > max_dist_x or \
-                    abs(y - core.y) > max_dist_y for core in self.cores):
-                self.cores.append(Core(x=x, y=y, n=len(self.cores) + 1))
-            else:
-                self.cores.append(Core(x=x, y=y, n=len(self.cores) + 1))
-            
-        return self.cores
+            self.grains.append(Grain(x=x, y=y, n=n+1))        
     
-    def growGrains(self) -> Iterable[Grain]:
+    def growGrains(self):
         """
             Creates instances of Grain class 
             and grows them with body represented by points on a coordinates
             with x: 0 .... self.sizeX 
             and y: 0 .... self.sizeY
         """
-        
-        # first, create empty grains out of cores:
-        for core in self.cores:
-            grain:Grain = Grain(core)
-            self.grains.append(grain)
 
         # then, start growing grains:
         for y in range(0, self.sizeY):
@@ -52,7 +37,7 @@ class PolyFactory:
                 growingGrain:Grain = self.grains[0]
                 for grain in self.grains:
                     grain:Grain
-                    distance = sqrt(pow(x - grain.core.x, 2) + pow(y - grain.core.y, 2))
+                    distance = sqrt(pow(x - grain.x, 2) + pow(y - grain.y, 2))
                     if distance <= growingGrain.getDistance(x, y):
                         growingGrain = grain
                 growingGrain.addPoint(x, y)
@@ -70,10 +55,9 @@ class PolyFactory:
         
         for grain in self.grains:
             grain:Grain 
-            core:Core = grain.core
             for point in grain.points:
                 point:Point
-                colorMatrix[point.x, point.y] = core.n
+                colorMatrix[point.x, point.y] = grain.n
         
         ax.imshow(colorMatrix, cmap='Spectral')
         plt.show()
