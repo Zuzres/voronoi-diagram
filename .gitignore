@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-desktop.ini
+**/desktop.ini
 __pycache__/
 *.py[cod]
 *$py.class

@@ -1,8 +1,8 @@
-from random import randint
 from math import sqrt
 from . import Grain, Point
 from matplotlib import pyplot as plt
-import numpy as np
+from numpy import zeros
+from numpy.random import randint
 
 class PolyFactory:
     def __init__(self, sizeX, sizeY):
@@ -10,18 +10,22 @@ class PolyFactory:
         self.sizeY:int = sizeY
         self.grains:list = list()
 
-    def seedGrains(self, numOfCores:int):
+    def seedGrains(self, numGrains:int):
         """
             Generates a requested number of Grains 
             within the set size of polycrystal coordinates
         """
         self.grains.clear()
-
-        # while len(self.grains) < numOfCores:
-        for n in range(0, numOfCores):
-            x = randint(0, self.sizeX)
-            y = randint(0, self.sizeY)
-            self.grains.append(Grain(x=x, y=y, n=n+1))        
+        
+        # let's generate a collection of random (x,y) coordinates:
+        coordinates = zip(
+            randint(0, self.sizeX, numGrains, 'int'), 
+            randint(0, self.sizeY, numGrains, 'int'))
+        
+        # now we can iterate through that (x, y) collection
+        # and create a Grain instance for each of them:
+        for i, (x, y) in enumerate(coordinates):
+            self.grains.append(Grain(x=x, y=y, n=i+1))
     
     def growGrains(self):
         """
@@ -49,7 +53,7 @@ class PolyFactory:
             and finally shows the plot
         """
 
-        colorMatrix = np.zeros((self.sizeX, self.sizeY))
+        colorMatrix = zeros((self.sizeX, self.sizeY))
 
         fig, ax = plt.subplots()
         
