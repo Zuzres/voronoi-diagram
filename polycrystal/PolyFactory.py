@@ -38,13 +38,9 @@ class PolyFactory:
         # then, start growing grains:
         for y in range(0, self.sizeY):
             for x in range(0, self.sizeX):
-                growingGrain:Grain = self.grains[0]
-                for grain in self.grains:
-                    grain:Grain
-                    distance = sqrt(pow(x - grain.x, 2) + pow(y - grain.y, 2))
-                    if distance <= growingGrain.getDistance(x, y):
-                        growingGrain = grain
-                growingGrain.addPoint(x, y)
+                closestGrain:Grain = min(self.grains, key = lambda grain: \
+                                  sqrt(pow(x - grain.x, 2) + pow(y - grain.y, 2)))
+                closestGrain.addPoint(x, y)
 
     def showGrains(self):
         """
